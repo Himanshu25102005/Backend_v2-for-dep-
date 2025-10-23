@@ -10,7 +10,7 @@ const isloggedin = (req, res, next) => {
   if (req.isAuthenticated()) {
     return next();
   } else {
-    res.redirect("http://localhost:3000/login");
+    res.redirect("https://samanyay-v2.vercel.app/login");
   }
 };
 
@@ -137,7 +137,7 @@ router.get(
 // Google OAuth callback route
 router.get(
   "/api/google/callback",
-  passport.authenticate("google", { failureRedirect: "http://localhost:3000" }),
+  passport.authenticate("google", { failureRedirect: "https://samanyay-v2.vercel.app/" }),
   (req, res) => {
     console.log("Google OAuth successful, redirecting to profile...");
     // Redirect to frontend profile page
