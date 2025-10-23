@@ -13,14 +13,23 @@ passport.use(new LocalStrategy(
   },
   async function(email, password, done) {
     try {
+      console.log("=== LOCAL STRATEGY AUTH ===");
+      console.log("Email:", email);
+      
       // Use passport-local-mongoose authenticate method
-      const user = await userModel.authenticate()(email, password);
-      if (user) {
-        return done(null, user);
+      const result = await userModel.authenticate()(email, password);
+      console.log("Auth result:", result);
+      
+      if (result.user) {
+        console.log("Authentication successful, user:", result.user);
+        console.log("User._id:", result.user._id);
+        return done(null, result.user);
       } else {
+        console.log("Authentication failed");
         return done(null, false, { message: 'Invalid email or password' });
       }
     } catch (error) {
+      console.error("Local strategy error:", error);
       return done(error);
     }
   }
