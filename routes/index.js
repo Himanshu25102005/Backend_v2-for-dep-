@@ -88,7 +88,12 @@ router.post("/api/login", (req, res, next) => {
     
     req.logIn(user, (err) => {
       if (err) {
-        console.error("Login error:", err);
+        console.error("=== LOGIN ERROR ===");
+        console.error("Error:", err);
+        console.error("Error message:", err.message);
+        console.error("User object:", user);
+        console.error("User._id:", user?._id);
+        console.error("User.id:", user?.id);
         return res.status(500).json({ 
           success: false, 
           message: "Login failed", 
@@ -96,7 +101,7 @@ router.post("/api/login", (req, res, next) => {
         });
       }
       
-      /* console.log("User logged in successfully:", user); */
+      console.log("User logged in successfully:", user);
       return res.json({ 
         success: true, 
         message: "Login successful",

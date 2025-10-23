@@ -26,9 +26,14 @@ app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'ejs');
 
 app.use(session({
-  resave:false,
-  saveUninitialized:false,
-  secret: process.env.SESSION_SECRET || "hey hey hey"
+  resave: false,
+  saveUninitialized: false,
+  secret: process.env.SESSION_SECRET || "hey hey hey",
+  cookie: {
+    secure: process.env.NODE_ENV === 'production', // Use secure cookies in production
+    httpOnly: true,
+    maxAge: 24 * 60 * 60 * 1000 // 24 hours
+  }
 }))
 
 // Initialize Passport

@@ -58,6 +58,17 @@ passport.use(new GoogleStrategy({
 ));
 
 passport.serializeUser((user, done) => {
+    console.log("=== SERIALIZE USER ===");
+    console.log("User object:", user);
+    console.log("User._id:", user._id);
+    console.log("User.id:", user.id);
+    console.log("User keys:", Object.keys(user));
+    
+    if (!user._id) {
+        console.error("No _id found in user object!");
+        return done(new Error("User object missing _id"), null);
+    }
+    
     done(null, user._id);
 })
 
