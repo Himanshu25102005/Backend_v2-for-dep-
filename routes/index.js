@@ -27,7 +27,10 @@ router.get("/api/test", function (req, res, next) {
 });
 
 router.post("/api/register", (req, res) => {
+  console.log("=== REGISTER REQUEST ===");
   console.log("Registration request received:", req.body);
+  console.log("Headers:", req.headers);
+  console.log("Origin:", req.get('origin'));
   
   const data = new userModel({
     name: req.body.name,
@@ -60,7 +63,10 @@ router.post("/api/register", (req, res) => {
 
 
 router.post("/api/login", (req, res, next) => {
+  console.log("=== LOGIN REQUEST ===");
   console.log("Login request received:", req.body);
+  console.log("Headers:", req.headers);
+  console.log("Origin:", req.get('origin'));
   
   passport.authenticate("local", (err, user, info) => {
     if (err) {
@@ -90,7 +96,7 @@ router.post("/api/login", (req, res, next) => {
         });
       }
       
-      console.log("User logged in successfully:", user);
+      /* console.log("User logged in successfully:", user); */
       return res.json({ 
         success: true, 
         message: "Login successful",
@@ -155,6 +161,29 @@ router.get("/api/Drafting-Assistant", isloggedin, (req, res) => {
 
 router.get("/api/Document-Analysis", isloggedin, (req, res) => {
   res.redirect("https://samanyay-v2.vercel.app/Document-Analysis");
+});
+
+// Debug route to catch all requests and see what's being called
+router.all("*", (req, res) => {
+  console.log("=== 404 REQUEST ===");
+  console.log("Method:", req.method);
+  console.log("URL:", req.url);
+  console.log("Headers:", req.headers);
+  console.log("Body:", req.body);
+  console.log("Origin:", req.get('origin'));
+  res.status(404).json({ 
+    error: "Route not found", 
+    method: req.method, 
+    url: req.url,
+    availableRoutes: [
+      "POST /api/register",
+      "POST /api/login", 
+      "GET /api/user",
+      "GET /api/test",
+      "GET /api/auth/google",
+      "GET /api/google/callback"
+    ]
+  });
 });
 
 module.exports = router;
