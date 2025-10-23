@@ -141,7 +141,7 @@ router.get(
   (req, res) => {
     console.log("Google OAuth successful, redirecting to profile...");
     // Redirect to frontend profile page
-    res.redirect("samanyay-v2.vercel.app/profile");
+    res.redirect("https://samanyay-v2.vercel.app/profile");
   }
 );
 
