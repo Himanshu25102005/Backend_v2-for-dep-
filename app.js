@@ -15,7 +15,7 @@ var app = express();
 
 
 app.use(cors({
-  origin: process.env.FRONTEND_URL || 'http://localhost:3000', // Your React app's URL
+  origin: process.env.FRONTEND_URL || 'https://samanyay-v2.vercel.app', // Your React app's URL
   credentials: true, // Allow cookies/sessions
   methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
   allowedHeaders: ['Content-Type', 'Authorization']
