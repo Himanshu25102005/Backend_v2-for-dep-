@@ -10,12 +10,13 @@ const session = require('express-session');
 
 var indexRouter = require('./routes/index');
 var usersRouter = require('./routes/users');
+var casesRouter = require('./routes/cases');
 
 var app = express();
 
 
 app.use(cors({
-  origin: process.env.FRONTEND_URL || 'https://samanyay-v2.vercel.app', // Your React app's URL
+  origin: process.env.FRONTEND_URL || 'http://localhost:3000', // Your React app's URL
   credentials: true, // Allow cookies/sessions
   methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
   allowedHeaders: ['Content-Type', 'Authorization']
@@ -26,14 +27,9 @@ app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'ejs');
 
 app.use(session({
-  resave: false,
-  saveUninitialized: false,
-  secret: process.env.SESSION_SECRET || "hey hey hey",
-  cookie: {
-    secure: process.env.NODE_ENV === 'production', // Use secure cookies in production
-    httpOnly: true,
-    maxAge: 24 * 60 * 60 * 1000 // 24 hours
-  }
+  resave:false,
+  saveUninitialized:false,
+  secret: process.env.SESSION_SECRET || "hey hey hey"
 }))
 
 // Initialize Passport
@@ -47,8 +43,9 @@ app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 
-app.use('/', indexRouter);
 app.use('/users', usersRouter);
+app.use('/', casesRouter);
+app.use('/', indexRouter);
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
