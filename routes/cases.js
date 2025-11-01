@@ -151,12 +151,14 @@ router.post("/api/cases", isAuthenticated, async (req, res) => {
       clientDetails: {
         name: req.body.clientName,
         phone: req.body.clientPhone,
-        email: req.body.clientEmail
+        email: req.body.clientEmail,
+        address: req.body.address || '',
+        profession: req.body.profession || ''
       },
       caseSummary: req.body.caseSummary,
       nextSteps: req.body.nextSteps,
       nextDate: req.body.nextDate ? new Date(req.body.nextDate) : null,
-      status: req.body.status || 'Active',
+      status: req.body.status || 'Pre-litigation',
       tags: req.body.tags || []
     };
     
@@ -191,8 +193,10 @@ router.put("/api/cases/:caseId", isAuthenticated, async (req, res) => {
     
     // Update fields
     if (req.body.clientName) caseData.clientDetails.name = req.body.clientName;
-    if (req.body.clientPhone) caseData.clientDetails.phone = req.body.clientPhone;
-    if (req.body.clientEmail) caseData.clientDetails.email = req.body.clientEmail;
+    if (req.body.clientPhone !== undefined) caseData.clientDetails.phone = req.body.clientPhone;
+    if (req.body.clientEmail !== undefined) caseData.clientDetails.email = req.body.clientEmail;
+    if (req.body.address !== undefined) caseData.clientDetails.address = req.body.address;
+    if (req.body.profession !== undefined) caseData.clientDetails.profession = req.body.profession;
     if (req.body.caseSummary !== undefined) caseData.caseSummary = req.body.caseSummary;
     if (req.body.nextSteps !== undefined) caseData.nextSteps = req.body.nextSteps;
     if (req.body.nextDate !== undefined) caseData.nextDate = req.body.nextDate ? new Date(req.body.nextDate) : null;
