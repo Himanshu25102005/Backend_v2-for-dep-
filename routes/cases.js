@@ -57,12 +57,35 @@ const isAuthenticated = (req, res, next) => {
 // Get all cases for the authenticated user
 router.get("/api/cases", isAuthenticated, async (req, res) => {
   try {
-    console.log("Fetching cases for user:", req.user && req.user._id);
+    console.log("Fetching cases for user:", req.user);
+    console.log("User _id:", req.user && req.user._id);
+    console.log("User _id type:", req.user && req.user._id && typeof req.user._id);
+    console.log("User _id string:", req.user && req.user._id && req.user._id.toString());
+    
     if (!req.user || !req.user._id) {
+      console.log("Authentication failed - no user or _id");
       return res.status(401).json({ success: false, message: "Authentication required" });
     }
-    const cases = await Case.find({ userId: req.user._id }).sort({ updatedAt: -1 });
+    
+    // Ensure userId is an ObjectId
+    const userId = req.user._id instanceof mongoose.Types.ObjectId 
+      ? req.user._id 
+      : new mongoose.Types.ObjectId(req.user._id);
+    
+    console.log("Querying with userId:", userId);
+    console.log("UserId as string:", userId.toString());
+    
+    // Query cases matching the user's ID
+    // Use $or to match both ObjectId and string formats (in case some cases were stored with string IDs)
+    const cases = await Case.find({
+      $or: [
+        { userId: userId },
+        { userId: userId.toString() }
+      ]
+    }).sort({ updatedAt: -1 });
+    
     console.log("Found cases:", cases.length);
+    console.log("Cases sample:", cases.length > 0 ? cases[0].userId : 'none');
     res.json({ success: true, cases: cases || [] });
   } catch (error) {
     console.error("Error fetching cases:", error);
@@ -103,24 +126,17 @@ router.post("/api/cases", isAuthenticated, async (req, res) => {
   try {
     console.log("Creating case with data:", req.body);
     
-    // Use user ID from authentication or Google ID
-    let userId;
-    if (req.user && req.user._id) {
-      userId = req.user._id;
-      console.log("Using authenticated userId:", userId);
-    } else if (req.user && req.user.google_id) {
-      // Use Google ID as string if available
-      userId = req.user.google_id.toString();
-      console.log("Using Google ID as userId:", userId);
-    } else {
-      // For development: create a consistent user ID based on email or use a default
-      const email = req.body.clientEmail || 'default@example.com';
-      // Create a consistent hash-based ID for the same email
-      const crypto = require('crypto');
-      const hash = crypto.createHash('md5').update(email).digest('hex');
-      userId = hash.substring(0, 24); // Use first 24 characters as ObjectId-like string
-      console.log("Using hash-based userId for development:", userId);
+    // Use user ID from authentication - req.user should already be the full user document
+    if (!req.user || !req.user._id) {
+      return res.status(401).json({ success: false, message: "Authentication required" });
     }
+    
+    // Ensure userId is stored as ObjectId
+    const userId = req.user._id instanceof mongoose.Types.ObjectId 
+      ? req.user._id 
+      : new mongoose.Types.ObjectId(req.user._id);
+    
+    console.log("Creating case with userId:", userId);
     
     const caseData = {
       userId: userId,
