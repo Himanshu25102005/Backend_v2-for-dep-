@@ -351,7 +351,7 @@ router.post("/api/cases/:caseId/tasks", isAuthenticated, async (req, res) => {
 });
 
 // Update a task
-router.put("/api/tasks/:taskId", async (req, res) => {
+router.put("/api/tasks/:taskId", isAuthenticated, async (req, res) => {
   try {
     const task = await Task.findById(req.params.taskId).populate('caseId');
     if (!task) {
@@ -395,7 +395,7 @@ router.put("/api/tasks/:taskId", async (req, res) => {
 });
 
 // Mark task as completed
-router.patch("/api/tasks/:taskId/complete", async (req, res) => {
+router.patch("/api/tasks/:taskId/complete", isAuthenticated, async (req, res) => {
   try {
     const task = await Task.findById(req.params.taskId);
     if (!task) {
@@ -417,7 +417,7 @@ router.patch("/api/tasks/:taskId/complete", async (req, res) => {
 });
 
 // Mark task as incomplete
-router.patch("/api/tasks/:taskId/incomplete", async (req, res) => {
+router.patch("/api/tasks/:taskId/incomplete", isAuthenticated, async (req, res) => {
   try {
     const task = await Task.findById(req.params.taskId);
     if (!task) {
@@ -654,7 +654,7 @@ router.delete("/api/documents/:docId", isAuthenticated, async (req, res) => {
 });
 
 // Download a document
-router.get("/api/documents/:docId/download", async (req, res) => {
+router.get("/api/documents/:docId/download", isAuthenticated, async (req, res) => {
   try {
     const doc = await Document.findById(req.params.docId).populate('caseId');
     if (!doc) {
