@@ -43,13 +43,20 @@ const upload = multer({
 
 // Middleware to check authentication
 const isAuthenticated = (req, res, next) => {
-  // For development, allow all requests
-  // Uncomment below lines for production
-  // if (req.isAuthenticated()) {
-  //   return next();
-  // }
-  // return res.status(401).json({ success: false, message: "Authentication required" });
-  return next();
+  console.log("=== AUTHENTICATION CHECK ===");
+  console.log("Session ID:", req.sessionID);
+  console.log("Is authenticated:", req.isAuthenticated());
+  console.log("User:", req.user);
+  console.log("Cookies:", req.cookies);
+  
+  // Check if user is authenticated
+  if (req.isAuthenticated() && req.user) {
+    console.log("User is authenticated, proceeding...");
+    return next();
+  }
+  
+  console.log("User is NOT authenticated, returning 401");
+  return res.status(401).json({ success: false, message: "Authentication required" });
 };
 
 // ========== CASE ROUTES ==========
